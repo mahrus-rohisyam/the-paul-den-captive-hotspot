@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+  <head>
+    <title>The Paul hotspot > login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="-1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0; maximum-scale=1.0;"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    style="background-image: url('/img/rc-poster.jpg')"
+    class="flex items-center justify-center h-screen bg-gray-100 aspect-auto bg-no-repeat bg-cover bg-center"
+  >
+    <!-- Main login form -->
+    <div class="w-full flex justify-center py-24">
+      <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
+        <!-- CHAP authentication form handling -->
+        $(if chap-id)
+        <form name="sendin" action="$(link-login-only)" method="post">
+          <input type="hidden" name="username" />
+          <input type="hidden" name="password" />
+          <input type="hidden" name="dst" value="$(link-orig)" />
+          <input type="hidden" name="popup" value="true" />
+        </form>
+
+        <script type="text/javascript" src="/md5.js"></script>
+        <script type="text/javascript">
+          function doLogin() {
+            document.sendin.username.value = document.login.username.value;
+            document.sendin.password.value = hexMD5(
+              "$(chap-id)" + document.login.password.value + "$(chap-challenge)"
+            );
+            document.sendin.submit();
+            return false;
+          }
+        </script>
+        $(endif)
+
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+          Welcome to The Paul's Net
+        </h2>
+
+        <form
+          name="login"
+          action="$(link-login-only)"
+          method="post"
+          $(if
+          chap-id)
+          onSubmit="return doLogin()"
+          $(endif)
+        >
+          <input type="hidden" name="dst" value="$(link-orig)" />
+          <input type="hidden" name="popup" value="true" />
+
+          <div class="mb-4">
+            <label
+              for="username"
+              class="block text-sm font-medium text-gray-700"
+              >Login</label
+            >
+            <input
+              type="text"
+              name="username"
+              id="username"
+              value="$(username)"
+              class="w-full px-4 py-2 mt-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            />
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700"
+              >Password</label
+            >
+            <input
+              type="password"
+              name="password"
+              id="password"
+              class="w-full px-4 py-2 mt-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            />
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="w-full px-4 py-2 font-bold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+            >
+              OK
+            </button>
+          </div>
+        </form>
+
+        <!-- Footer section -->
+        <div class="text-center mt-4">
+          <div class="text-gray-600 text-sm mt-2">Powered by The Pauls</div>
+          $(if error)
+          <div class="text-red-500 text-sm mt-2">$(error)</div>
+          $(endif)
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      document.login.username.focus();
+    </script>
+  </body>
+</html>
