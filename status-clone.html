@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+    <title>mikrotik hotspot > status</title>
+    $(if refresh-timeout)
+    <meta http-equiv="refresh" content="$(refresh-timeout-secs)">
+    $(endif)
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0; maximum-scale=1.0;">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-100" $(if advert-pending == 'yes') onLoad="openAdvert()" $(endif)>
+    <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <div class="text-center text-xl font-bold text-gray-800 mb-6">
+            <!-- Conditional welcome message -->
+            $(if login-by == 'trial')
+            <p>Welcome trial user!</p>
+            $(elif login-by != 'mac')
+            <p>Welcome $(username)!</p>
+            $(endif)
+        </div>
+
+        <!-- Status table -->
+        <table class="w-full text-sm text-gray-700">
+            <tr>
+                <td class="text-right font-medium">IP address:</td>
+                <td class="pl-2">$(ip)</td>
+            </tr>
+            <tr>
+                <td class="text-right font-medium">Bytes up/down:</td>
+                <td class="pl-2">$(bytes-in-nice) / $(bytes-out-nice)</td>
+            </tr>
+            $(if session-time-left)
+            <tr>
+                <td class="text-right font-medium">Connected / left:</td>
+                <td class="pl-2">$(uptime) / $(session-time-left)</td>
+            </tr>
+            $(else)
+            <tr>
+                <td class="text-right font-medium">Connected:</td>
+                <td class="pl-2">$(uptime)</td>
+            </tr>
+            $(endif)
+            $(if blocked == 'yes')
+            <tr>
+                <td class="text-right font-medium">Status:</td>
+                <td class="pl-2 text-red-500"><a href="$(link-advert)" target="hotspot_advert" class="underline">Advertisement</a> required</td>
+            </tr>
+            $(elif refresh-timeout)
+            <tr>
+                <td class="text-right font-medium">Status refresh:</td>
+                <td class="pl-2">$(refresh-timeout)</td>
+            </tr>
+            $(endif)
+        </table>
+
+        <!-- Log off button -->
+        $(if login-by-mac != 'yes')
+        <div class="mt-6 text-center">
+            <form action="$(link-logout)" name="logout" onSubmit="return openLogout()">
+                <button type="submit" class="px-4 py-2 font-bold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">Log Off</button>
+            </form>
+        </div>
+        $(endif)
+    </div>
+
+    <script language="JavaScript">
+        // if (advert-pending == 'yes') {
+        //   var popup = ''
+
+        //   function focusAdvert(){
+        //     if (window.focus) popup.focus()
+        //   }
+
+        //   function openAdvert(){
+        //     popup = open('$(link-advert)', 'hotspot_advert', '');
+        //     setTimeout("focusAdvert()", 1000);
+        //   }
+        // }
+        $(if advert-pending == 'yes')
+        var popup = '';
+        function focusAdvert() {
+            if (window.focus) popup.focus();
+        }
+        function openAdvert() {
+            popup = open('$(link-advert)', 'hotspot_advert', '');
+            setTimeout("focusAdvert()", 1000);
+        }
+        $(endif)
+
+        function openLogout() {
+            if (window.name != 'hotspot_status') return true;
+            open('$(link-logout)', 'hotspot_logout', 'toolbar=0,location=0,directories=0,status=0,menubars=0,resizable=1,width=280,height=250');
+            window.close();
+            return false;
+        }
+    </script>
+</body>
+</html>

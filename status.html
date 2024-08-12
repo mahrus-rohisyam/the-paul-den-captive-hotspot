@@ -7,6 +7,7 @@ $(endif)
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="expires" content="-1">
+<script src="https://cdn.tailwindcss.com"></script>
 <style type="text/css">
 <!--
 textarea,input,select {
@@ -58,47 +59,54 @@ $(endif)
 //-->
 </script>
 </head>
-<body bottommargin="0" topmargin="0" leftmargin="0" rightmargin="0"
+<body class="flex items-center justify-center h-screen bg-gray-100"
 $(if advert-pending == 'yes')
 	onLoad="openAdvert()"
 $(endif)
 >
-<table width="100%" height="100%">
+<div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <!-- Status table -->
+        <table class="w-full text-sm text-gray-700">
+            <tr>
+                <td class="text-right font-medium">IP address:</td>
+                <td class="pl-2">$(ip)</td>
+            </tr>
+            <tr>
+                <td class="text-right font-medium">Bytes up/down:</td>
+                <td class="pl-2">$(bytes-in-nice) / $(bytes-out-nice)</td>
+            </tr>
+            $(if session-time-left)
+            <tr>
+                <td class="text-right font-medium">Connected / left:</td>
+                <td class="pl-2">$(uptime) / $(session-time-left)</td>
+            </tr>
+            $(else)
+            <tr>
+                <td class="text-right font-medium">Connected:</td>
+                <td class="pl-2">$(uptime)</td>
+            </tr>
+            $(endif)
+            $(if blocked == 'yes')
+            <tr>
+                <td class="text-right font-medium">Status:</td>
+                <td class="pl-2 text-red-500"><a href="$(link-advert)" target="hotspot_advert" class="underline">Advertisement</a> required</td>
+            </tr>
+            $(elif refresh-timeout)
+            <tr>
+                <td class="text-right font-medium">Status refresh:</td>
+                <td class="pl-2">$(refresh-timeout)</td>
+            </tr>
+            $(endif)
+        </table>
 
-<tr>
-<td align="center" valign="middle">
-<form action="$(link-logout)" name="logout" onSubmit="return openLogout()">
-<table border="1" class="tabula">
-$(if login-by == 'trial')
-	<br><div style="text-align: center;">Welcome trial user!</div><br>
-$(elif login-by != 'mac')
-	<br><div style="text-align: center;">Welcome $(username)!</div><br>
-$(endif)
-	<tr><td align="right">IP address:</td><td>$(ip)</td></tr>
-	<tr><td align="right">bytes up/down:</td><td>$(bytes-in-nice) / $(bytes-out-nice)</td></tr>
-$(if session-time-left)
-	<tr><td align="right">connected / left:</td><td>$(uptime) / $(session-time-left)</td></tr>
-$(else)
-	<tr><td align="right">connected:</td><td>$(uptime)</td></tr>
-$(endif)
-$(if blocked == 'yes')
-	<tr><td align="right">status:</td><td><div style="color: #FF8080">
-<a href="$(link-advert)" target="hotspot_advert">advertisement</a> required</div></td>
-$(elif refresh-timeout)
-	<tr><td align="right">status refresh:</td><td>$(refresh-timeout)</td>
-$(endif)
-
-</table>
-$(if login-by-mac != 'yes')
-<br>
-<!-- user manager link. if user manager resides on other router, replace $(hostname) by its address
-<button onclick="document.location='http://$(hostname)/user?subs='; return false;">status</button>
-<!-- end of user manager link -->
-<input type="submit" value="log off">
-$(endif)
-</form>
-
-</td>
-</table>
+        <!-- Log off button -->
+        $(if login-by-mac != 'yes')
+        <div class="mt-6 text-center">
+            <form action="$(link-logout)" name="logout" onSubmit="return openLogout()">
+                <button type="submit" class="px-4 py-2 font-bold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">Log Off</button>
+            </form>
+        </div>
+        $(endif)
+    </div>
 </body>
 </html>
